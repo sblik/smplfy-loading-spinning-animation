@@ -2,7 +2,7 @@
 /*
  * Plugin Name: SMPLFY Spinning Animation
  * Add a lightweight CSS spinner animation
- * Version: 1.0
+ * Version: 1.1
  * Author: Liam Nell
  * URL: simplifybiz.com
  * */
@@ -19,23 +19,24 @@ YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
 );
 
 add_shortcode( 'spinning_animation', function( $atts ) {
-    $a = shortcode_atts( [ 'size' => 40, 'color' => '#333' ], $atts );
+    $a = shortcode_atts( [ 'size' => 40, 'color' => '#333', 'persist' => 0 ], $atts );
     wp_enqueue_style( 'smplfy-spinner', plugins_url( 'spinner.css', __FILE__ ) );
     return sprintf(
 '<div 
-            class="smplfy-spinner"
+            class="smplfy-spinner%3$s"
             role="status"
             aria-label="Loading"
             style="width:%1$dpx;height:%1$dpx;border-top-color:%2$s">
         </div>',
         (int) $a['size'],
-        esc_attr( $a['color'] )
+        esc_attr( $a['color'] ),
+        $a['persist'] ? ' smplfy-persist' : ''
     );
 } );
 
 add_action( 'wp_footer', function() {
     echo '<script>
-        addEventListener("load", ()=>document.querySelectorAll(".smplfy-spinner").forEach(e=>e.remove()))
+        addEventListener("load", ()=>document.querySelectorAll(".smplfy-spinner:not(.smplfy-persist)").forEach(e=>e.remove()))
     </script>';
 } );
 
