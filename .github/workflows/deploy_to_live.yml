@@ -1,0 +1,33 @@
+name: Deploy to live
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches-ignore: [ "**" ]
+  pull_request_target:
+    branches-ignore: [ "**" ]
+  workflow_dispatch:
+
+jobs:
+  ftp-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest changes
+        uses: actions/checkout@v4
+
+      - name: Deploy changes via ftp
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ftp.smplfy.dev
+          username: ${{ secrets.FTP_LIVE_USERNAME }}
+          password: ${{ secrets.FTP_LIVE_PASSWORD }}
+          server-dir: mydoitems.smplfy.dev/public_html/wp-content/plugins/smplfy-loading-spinning-animation/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/.github/**
+            **/.idea/**
+            **/exclude/**
+            README.md
